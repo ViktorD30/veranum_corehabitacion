@@ -5,6 +5,9 @@ import com.veranum.corehabitacion.dto.EstadoHabitacionRequest;
 import com.veranum.corehabitacion.dto.HabitacionRequest;
 import com.veranum.corehabitacion.dto.HabitacionResponse;
 import com.veranum.corehabitacion.service.HabitacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 
@@ -13,6 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+
+@Tag(
+        name = "Gestión de Habitaciones",
+        description = "Operaciones para crear, consultar, actualizar, cambiar estado y eliminar habitaciones del hotel"
+)
 
 @RestController
 @RequestMapping("/api/v1/habitaciones")
@@ -26,6 +35,24 @@ public class HabitacionController {
         this.habitacionService = habitacionService;
     }
 
+
+
+        @Operation(
+        summary = "Crear una habitación",
+        description = "Registra una nueva habitación indicando número, tipo, precio por noche y estado."
+)
+        @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "201",
+                description = "Habitación creada correctamente"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description = "Datos inválidos o número de habitación duplicado"
+        )
+})
+
+    
     @PostMapping
     public ResponseEntity<ApiResponse<HabitacionResponse>>
     crear(
@@ -43,6 +70,16 @@ public class HabitacionController {
         );
     }
 
+        @Operation(
+        summary = "Listar habitaciones",
+        description = "Obtiene todas las habitaciones registradas en el sistema."
+)
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "200",
+        description = "Listado obtenido correctamente"
+)
+
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<HabitacionResponse>>>
     obtenerTodas() {
@@ -56,6 +93,22 @@ public class HabitacionController {
                 )
         );
     }
+
+
+        @Operation(
+        summary = "Buscar habitación por ID",
+        description = "Obtiene los datos de una habitación específica mediante su identificador."
+)
+        @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "Habitación encontrada"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "404",
+                description = "Habitación no encontrada"
+        )
+})
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<HabitacionResponse>>
@@ -72,6 +125,16 @@ public class HabitacionController {
         );
     }
 
+        @Operation(
+        summary = "Listar habitaciones disponibles",
+        description = "Obtiene únicamente las habitaciones cuyo estado es DISPONIBLE."
+)
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "200",
+        description = "Habitaciones disponibles obtenidas correctamente"
+)
+
+
     @GetMapping("/disponibles")
     public ResponseEntity<ApiResponse<List<HabitacionResponse>>>
     obtenerDisponibles() {
@@ -85,6 +148,25 @@ public class HabitacionController {
                 )
         );
     }
+    
+        @Operation(
+        summary = "Actualizar habitación",
+        description = "Actualiza el número, tipo, precio por noche y estado de una habitación existente."
+)
+        @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "Habitación actualizada correctamente"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description = "Datos inválidos o número duplicado"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "404",
+                description = "Habitación no encontrada"
+        )
+})
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<HabitacionResponse>>
@@ -105,6 +187,26 @@ public class HabitacionController {
         );
     }
 
+        @Operation(
+        summary = "Cambiar estado de habitación",
+        description = "Modifica únicamente el estado de una habitación: DISPONIBLE, OCUPADA o MANTENIMIENTO."
+)
+        @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "Estado actualizado correctamente"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                description = "Estado inválido"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "404",
+                description = "Habitación no encontrada"
+        )
+})
+
+
     @PutMapping("/{id}/estado")
     public ResponseEntity<ApiResponse<HabitacionResponse>>
     actualizarEstado(
@@ -123,6 +225,22 @@ public class HabitacionController {
                 )
         );
     }
+
+        @Operation(
+        summary = "Eliminar habitación",
+        description = "Elimina una habitación registrada mediante su identificador."
+)
+        @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "Habitación eliminada correctamente"
+        ),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "404",
+                description = "Habitación no encontrada"
+        )
+})    
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>>
